@@ -1,4 +1,6 @@
 import React from 'react';
+import { auth } from '../../store/Thunks/index';
+import { connect } from 'react-redux';
 import {
   View,
   ScrollView,
@@ -13,16 +15,16 @@ import {
   FormValidationMessage
 } from 'react-native-elements';
 
-let newUserData = [];
+// let newUserData = [];
 
-export default class SignUpP1 extends React.Component {
+class SignUpP1 extends React.Component {
   state = {
     firstName: '',
     lastName: '',
     email: '',
     password: '',
     rePassword: '',
-    error: ' ',
+    error: '',
     fadeAnim: new Animated.Value(0)
   };
 
@@ -33,21 +35,36 @@ export default class SignUpP1 extends React.Component {
     }).start();
   }
 
-  handleNextButton = async () => {
+  handleSubmit = async (event) => {
+    // event.prevault();
     await this.handleError();
-    const { navigate } = this.props.navigation;
     const form = (({ firstName, lastName, email, password, rePassword }) => ({
-      firstName,
-      lastName,
-      email,
-      password,
-      rePassword
-    }))(this.state);
-    if (this.state.error === ' ') {
-      newUserData.push(form);
-      navigate('SignUpP2', { newUserData });
-    }
+          firstName,
+          lastName,
+          email,
+          password
+        }))(this.state);
+    const { popToTop } = this.props.navigation;
+    await this.props.sendInfo(form, 'signup');
+    alert('Account created successfully!');
+    popToTop();
   };
+
+  // handleNextButton = async () => {
+  //   await this.handleError();
+  //   const { navigate } = this.props.navigation;
+  //   const form = (({ firstName, lastName, email, password, rePassword }) => ({
+  //     firstName,
+  //     lastName,
+  //     email,
+  //     password,
+  //     rePassword
+  //   }))(this.state);
+  //   if (this.state.error === ' ') {
+  //     newUserData.push(form);
+  //     navigate('SignUpP2', { newUserData });
+  //   }
+  // };
 
   validateEmail = email => {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -76,86 +93,95 @@ export default class SignUpP1 extends React.Component {
     return (
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Animated.View style={{ opacity: fadeAnim }}>
-
-            <KeyboardAvoidingView enabled behavior="padding">
-              <View style={styles.loginContainer}>
-                <View>
-                  <FormInput
-                    errorMessage
-                    containerStyle={styles.inputLine}
-                    placeholder="First Name (required)"
-                    onChangeText={value => {
-                      this.setState({ firstName: value });
-                    }}
-                  />
-                </View>
-
-                <View>
-                  <FormInput
-                    errorMessage
-                    containerStyle={styles.inputLine}
-                    placeholder="Last Name (required)"
-                    onChangeText={value => {
-                      this.setState({ lastName: value });
-                    }}
-                  />
-                </View>
-
-                <View>
-                  <FormInput
-                    errorMessage
-                    autoCapitalize="none"
-                    containerStyle={styles.inputLine}
-                    placeholder="Email (required)"
-                    onChangeText={value => {
-                      this.setState({ email: value });
-                    }}
-                  />
-                </View>
-
-                <View>
-                  <FormInput
-                    secureTextEntry
-                    errorMessage
-                    autoCapitalize="none"
-                    containerStyle={styles.inputLine}
-                    placeholder="Password (required)"
-                    onChangeText={value => {
-                      this.setState({ password: value });
-                    }}
-                  />
-                </View>
-
-                <View>
-                  <FormInput
-                    secureTextEntry
-                    errorMessage
-                    autoCapitalize="none"
-                    containerStyle={styles.inputLine}
-                    placeholder="Confirm Password"
-                    onChangeText={value => {
-                      this.setState({ rePassword: value });
-                    }}
-                  />
-                </View>
-
-                <View>
-                  <Button
-                    onPress={() => {
-                      this.handleNextButton();
-                    }}
-                    title="Next (1 of 3)"
-                    raised={true}
-                    backgroundColor="#0080ff"
-                    style={styles.signUpButton}
-                  />
-                </View>
+          <KeyboardAvoidingView enabled behavior="padding">
+            <View style={styles.loginContainer}>
+              <View>
+                <FormInput
+                  errorMessage
+                  containerStyle={styles.inputLine}
+                  placeholder="First Name (required)"
+                  onChangeText={value => {
+                    this.setState({ firstName: value });
+                  }}
+                />
               </View>
-            </KeyboardAvoidingView>
-            <FormValidationMessage>{this.state.error}</FormValidationMessage>
 
+              <View>
+                <FormInput
+                  errorMessage
+                  containerStyle={styles.inputLine}
+                  placeholder="Last Name (required)"
+                  onChangeText={value => {
+                    this.setState({ lastName: value });
+                  }}
+                />
+              </View>
+
+              <View>
+                <FormInput
+                  errorMessage
+                  autoCapitalize="none"
+                  containerStyle={styles.inputLine}
+                  placeholder="Email (required)"
+                  onChangeText={value => {
+                    this.setState({ email: value });
+                  }}
+                />
+              </View>
+
+              <View>
+                <FormInput
+                  secureTextEntry
+                  errorMessage
+                  autoCapitalize="none"
+                  containerStyle={styles.inputLine}
+                  placeholder="Password (required)"
+                  onChangeText={value => {
+                    this.setState({ password: value });
+                  }}
+                />
+              </View>
+
+              <View>
+                <FormInput
+                  secureTextEntry
+                  errorMessage
+                  autoCapitalize="none"
+                  containerStyle={styles.inputLine}
+                  placeholder="Confirm Password"
+                  onChangeText={value => {
+                    this.setState({ rePassword: value });
+                  }}
+                />
+              </View>
+
+              <View>
+                <Button
+                  onPress={() => {
+                    // this.handleNextButton();
+                    this.handleSubmit();
+                  }}
+                  title="Next (1 of 3)"
+                  raised={true}
+                  backgroundColor="#0080ff"
+                  style={styles.signUpButton}
+                />
+              </View>
+            </View>
+          </KeyboardAvoidingView>
+          <FormValidationMessage>{this.state.error}</FormValidationMessage>
         </Animated.View>
       </ScrollView>
     );
   }
 }
+
+const mapDispatchToProps = dispatch => ({
+  // sendInfo: (userData, formName) => dispatch(auth(userData, formName))
+  sendInfo: (newUserData, formName) => dispatch(auth(newUserData, formName))
+});
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(SignUpP1);

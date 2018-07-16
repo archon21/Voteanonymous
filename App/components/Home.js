@@ -4,18 +4,12 @@ import {  Loading } from './';
 import styles from '../../public';
 import React, { Component } from 'react';
 // import ActionButton from 'react-native-action-button';
-import { me } from '../store/Thunks';
-import Firebase from './Firebase/Firebase';
 
 class Home extends Component {
-  async componentDidMount() {
-    const user = await Firebase.auth.currentUser;
-    await this.props.me(user);
-  }
 
 
   render() {
-    const { user, navigate } = this.props;
+    const { user, navigate, logout } = this.props;
     const firstName = user ? `, ${user.firstName}` : ``;
     return (
       <View style={styles.homeContainer}>
@@ -29,6 +23,7 @@ class Home extends Component {
                   backgroundColor="#0080ff"
                   style={styles.wideButton}
                 />
+
         </ScrollView>
 
         {/* <ActionButton
@@ -72,7 +67,7 @@ class Home extends Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-  me: user => dispatch(me(user))
+
 });
 
 export default connect(

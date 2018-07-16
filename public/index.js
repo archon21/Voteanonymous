@@ -10,6 +10,11 @@ export default (styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  voteHelperText: {
+    textAlign: 'center',
+    padding: 10,
+    fontSize: 30
+  },
   editUserContainer: {
     flex: 1,
     backgroundColor: '#fff',
@@ -20,7 +25,7 @@ export default (styles = StyleSheet.create({
   homeContainer: {
     marginTop: 70,
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#3F8EFC',
     width: '100%'
   },
   scrollContainer: {

@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
 import { BallotForm } from './index';
-// import { vote } from '../store'
 import { View } from 'react-native';
 import { Button } from 'react-native-elements';
 import { connect } from 'react-redux';
+import { vote } from '../store/Thunks'
 
 const parties = [
   {
     name: 'Blue Team',
     candidates: [
       {
-        value: 'Caligula',
-        label: 'Caligula'
+        value: 'Marcus Aemilius Lepidus',
+        label: 'Marcus Aemilius Lepidus'
       },
       {
-        value: 'Nero',
-        label: 'Nero'
+        value: 'Marc Antony',
+        label: 'Marc Antony'
       },
       {
         value: 'Augustus',
@@ -24,19 +24,19 @@ const parties = [
     ]
   },
   {
-    name: 'Blue Team',
+    name: 'Red Team',
     candidates: [
       {
-        value: 'Caligula',
-        label: 'Caligula'
+        value: 'Toyotomi Hideyoshi',
+        label: 'Toyotomi Hideyoshi'
       },
       {
-        value: 'Nero',
-        label: 'Nero'
+        value: 'Tokugawa Ieyasu',
+        label: 'Tokugawa Ieyasu'
       },
       {
-        value: 'Augustus',
-        label: 'Augustus'
+        value: 'Oda Nobunaga',
+        label: 'Oda Nobunaga'
       }
     ]
   },
@@ -65,16 +65,18 @@ class Ballot extends Component {
   };
 
   handleSubmit = () => {
-    event.preventDefault();
     console.log('clicked');
-    this.props.castVote(this.state.voteToBeCast);
+    this.props.castVote(this.state.voteToBeCast, this.props.user.wallet);
   };
 
-  handleChange = event => {
-    console.log(this.state);
+
+  handleChange = pickedCandidate => {
+    this.handleReset();
+    console.log(pickedCandidate)
     this.setState({
-      voteToBeCast: event.target.value
+        voteToBeCast: pickedCandidate
     });
+    console.log(this.state);
   };
 
   handleReset = () => {
@@ -104,15 +106,23 @@ class Ballot extends Component {
           backgroundColor="#0080ff"
           style={styles.wideButton}
         />
+
       </View>
     );
   }
 }
 
-// const mapDispatchToProps = dispatch => ({
-//     castVote: decesion => dispatch(vote(decesion))
-// })
+const mapDispatchToProps = dispatch => ({
+  castVote: (decesion, wallet) => dispatch(vote(decesion, wallet))
+})
+
+
+const mapStateToProps = state => ({
+  user: state.user.user
+});
+
+
 export default connect(
-  null,
-  null
+  mapStateToProps,
+  mapDispatchToProps
 )(Ballot);
